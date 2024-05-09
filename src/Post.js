@@ -10,12 +10,12 @@ function Posts({name, description, message, photoUrl}) {
       <div className='post_header'>
         <Avatar/>
         <div className='post_info'>
-          <h2>Vaaman Chopra </h2>
-          <p>description</p>
+          <h2>{name}</h2>
+          <p>{description}</p>
         </div>
       </div>
       <div className='post_body'>
-        <p>Message goes here</p>
+        <p>{message}</p>
       </div>
       <div className='post_buttons'>
         <InputOption Icon={ThumbUpSharpIcon} title= "Like" color="gray" />
