@@ -1,4 +1,4 @@
-import React from "react";
+import React, {useState} from "react";
 import "./Feed.css";
 import EditSharpIcon from "@mui/icons-material/EditSharp";
 import PhotoCameraSharpIcon from '@mui/icons-material/PhotoCameraSharp';
@@ -9,6 +9,7 @@ import InputOption from "./InputOption";
 import Post from "./Post";
 
 function Feed() {
+  const [posts, setPosts] = useState ([]);
   return (
     <div className="feed">
       <div className="feed_inputContainer">
@@ -27,6 +28,9 @@ function Feed() {
         </div>
       </div>
       {/* {posts} */}
+      {posts.map((Post) => (
+        <Post />
+      ))}
       <Post name="Vaaman Chopra" 
       description='This is a test' 
       message="WOW this worked"/>
