@@ -1,4 +1,4 @@
-import React, {useState} from "react";
+import React, {useEffect, useState} from "react";
 import "./Feed.css";
 import EditSharpIcon from "@mui/icons-material/EditSharp";
 import PhotoCameraSharpIcon from '@mui/icons-material/PhotoCameraSharp';
@@ -7,12 +7,28 @@ import CalendarMonthSharpIcon from '@mui/icons-material/CalendarMonthSharp';
 import ArticleSharpIcon from '@mui/icons-material/ArticleSharp';
 import InputOption from "./InputOption";
 import Post from "./Post";
+import { db } from "./firebase";
+import firebase from "firebase/compat/app";
 
 function Feed() {
+  const [input, setInput] = useState ('');
   const [posts, setPosts] = useState ([]);
+  useEffect( () => {
+    db.collection("posts").orderBy("timeStamp","desc").onSnapshot((snapshot) =>
+      setPosts(snapshot.docs.map((doc) => (
+        {
+          id: doc.id, 
+          data: doc.data(),
+        }
+      ))
+    )
+  );
+  },[])
 
   const sendPost = e => {
     e.preventDefault ();
+    db.collection("posts").add({name:"Vaaman Chopra", description:"cool", message:input, photoUrl:'', timeStamp:firebase.firestore.FieldValue.serverTimestamp()})
+    setInput("")
   }
   return (
     <div className="feed">
@@ -20,7 +36,7 @@ function Feed() {
         <div className="feed_input">
           <EditSharpIcon />
           <form>
-            <input type="text" />
+            <input type="text" value={input} onChange={e=> setInput(e.target.value)} />
             <button onClick ={sendPost} type="submit">Send</button>
           </form>
         </div>
@@ -32,12 +48,15 @@ function Feed() {
         </div>
       </div>
       {/* {posts} */}
-      {posts.map((Post) => (
-        <Post />
+      {posts.map(({id, data:{name,description, photoUrl, message}}) => (
+        <Post 
+        key={id}
+        name={name}
+        description={description}
+        message={message}
+        photoUrl={photoUrl}/>
+      
       ))}
-      <Post name="Vaaman Chopra" 
-      description='This is a test' 
-      message="WOW this worked"/>
     </div>
   );
 }
