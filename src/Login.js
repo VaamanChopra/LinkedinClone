@@ -27,16 +27,18 @@ const  dispatch = useDispatch();
                 photoURL: profilePic
             })
             .then(() => {
-                dispatch (login[{
+                dispatch(
+                    login[{
                     email: userAuth.user.email,
                     uid: userAuth.user.uid,
                     displayName: name,
                     photoURL: profilePic,
                 }])
             })
-        })
+        }).catch((error) => alert(error.message));
     
     };
+
   return (
     <div className='login'>
         <img src="https://upload.wikimedia.org/wikipedia/commons/thumb/0/01/LinkedIn_Logo.svg/1280px-LinkedIn_Logo.svg.png" 
