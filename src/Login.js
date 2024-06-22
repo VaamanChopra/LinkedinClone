@@ -13,31 +13,47 @@ const  dispatch = useDispatch();
 
     const loginToApp = (e) => {
         e.preventDefault();
+
+        auth.signInWithEmailAndPassword(email, password)
+        .then(userAuth => {
+          dispatch (login({
+            email:userAuth.user.email,
+            uid:userAuth.user.uid,
+            displayName: userAuth.user.displayName,
+            profileUrl: userAuth.user.photoURL,
+          }))
+        }).catch((error) => (alert(error)))
     };
 
-    const register = () => {
+    const registerHandler = async () => {
         if (!name) {
-            return alert ("Please enter a full name!")
+          return alert("Please enter a full name!");
         }
-
-        auth.createUserWithEmailAndPassword(email, password)
-        .then((userAuth) => {
-            userAuth.user.updateProfile({
-                displayName: name,
-                photoURL: profilePic
-            })
-            .then(() => {
-                dispatch(
-                    login[{
-                    email: userAuth.user.email,
-                    uid: userAuth.user.uid,
-                    displayName: name,
-                    photoURL: profilePic,
-                }])
-            })
-        }).catch((error) => alert(error.message));
     
-    };
+        try {
+          const userAuth = await auth.createUserWithEmailAndPassword(
+            email,
+            password
+          );
+    
+          await userAuth.user.updateProfile({
+            displayName: name,
+            photoUrl: profilePic,
+          });
+    
+          dispatch(
+            login({
+              email: userAuth.user.email,
+              uid: userAuth.user.uid,
+              displayName: name,
+              photoUrl: profilePic,
+            })
+          );
+        } catch (error) {
+          console.log(error);
+          alert(error);
+        }
+      };
 
   return (
     <div className='login'>
@@ -70,7 +86,7 @@ const  dispatch = useDispatch();
         </form>
 
         <p>Not a member? {" "}
-            <span className='login_register' onClick={register}>Register Now</span>
+            <span className='login_register' onClick={registerHandler}>Register Now</span>
         </p>
 
     </div>

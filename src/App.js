@@ -1,15 +1,36 @@
-import React from "react";
+import { useEffect } from "react";
+import { useSelector, useDispatch } from "react-redux";
 import "./App.css";
-import Header from "./Header";
-import Sidebar from "./Sidebar";
+import { login, logout, selectUser } from "./features/userSlice";
 import Feed from "./Feed";
-import "./InputOption"
-import { useSelector } from "react-redux";
-import { selectUser } from "./features/userSlice";
+import { auth } from "./firebase";
+import Header from "./Header";
 import Login from "./Login";
+import Sidebar from "./Sidebar";
+import Widgets from "./Widgets";
 
 function App() {
-  const user = useSelector(selectUser)
+  const {user} = useSelector(selectUser);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    auth.onAuthStateChanged((userAuth) => {
+      if (userAuth) {
+        dispatch(
+          login({
+            email: userAuth.email,
+            uid: userAuth.uid,
+            displayName: userAuth.displayName,
+            photoUrl: userAuth.photoURL,
+          })
+        );
+      } else {
+        dispatch(logout());
+      }
+    });
+
+    //eslint-disable-next-line
+  }, []);
 
   return (
     <div className="app">
@@ -20,6 +41,7 @@ function App() {
         <div className="app_body">
         <Sidebar/>
         <Feed />
+        <Widgets/>
       </div>
       )
       }
